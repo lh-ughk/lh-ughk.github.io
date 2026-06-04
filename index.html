@@ -3,127 +3,669 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cipher Dev — Apps</title>
-<meta name="description" content="Apps built by Cipher Dev — privacy-focused tools for everyone.">
+<title>Cipher Dev — Simple Apps. Powerful Solutions.</title>
+<meta name="description" content="Cipher Dev builds independent software products designed to make everyday tasks faster, smarter, and easier. Explore QR Wave and Office Tools.">
+<meta name="theme-color" content="#050505">
+<meta name="author" content="Cipher Dev">
+<link rel="canonical" href="https://lh-ughk.github.io/">
+
+<!-- Open Graph / SEO -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cipher Dev — Simple Apps. Powerful Solutions.">
+<meta property="og:description" content="Independent software products designed to make everyday tasks faster, smarter, and easier.">
+<meta property="og:url" content="https://lh-ughk.github.io/">
+<meta property="og:site_name" content="Cipher Dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cipher Dev — Simple Apps. Powerful Solutions.">
+<meta name="twitter:description" content="Independent software products designed to make everyday tasks faster, smarter, and easier.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Cipher Dev",
+  "url": "https://lh-ughk.github.io/",
+  "description": "Independent software products designed to make everyday tasks faster, smarter, and easier.",
+  "slogan": "Simple Apps. Powerful Solutions."
+}
+</script>
+
 <style>
   :root{
-    --bg:#0a0e1a; --card:#151b2e; --border:rgba(255,255,255,.08);
-    --txt:#e8ecf5; --muted:#8b94a8; --primary:#3b82f6; --accent:#06b6d4;
-    --grad:linear-gradient(135deg,#3b82f6 0%,#06b6d4 100%);
+    --bg:#050505;
+    --surface:#111111;
+    --surface-2:#161616;
+    --accent:#4F46E5;
+    --accent-2:#06B6D4;
+    --grad:linear-gradient(135deg,#4F46E5 0%,#06B6D4 100%);
+    --text:#f5f5f7;
+    --muted:#9a9aa6;
+    --muted-2:#6b6b78;
+    --border:rgba(255,255,255,.08);
+    --border-hover:rgba(255,255,255,.16);
+    --glass:rgba(255,255,255,.04);
+    --shadow:0 20px 60px -20px rgba(0,0,0,.7);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-       background:var(--bg);color:var(--txt);line-height:1.6;min-height:100vh;
-       display:flex;flex-direction:column}
+  html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(79,70,229,.4);color:#fff}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
 
-  nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;
-      justify-content:space-between;padding:14px 24px;
-      background:rgba(10,14,26,.85);backdrop-filter:blur(12px);
-      border-bottom:1px solid var(--border)}
-  .logo{font-weight:700;font-size:18px;color:var(--txt);text-decoration:none}
-  .logo span{background:var(--grad);-webkit-background-clip:text;
-      background-clip:text;-webkit-text-fill-color:transparent}
+  /* ---------- Background canvas ---------- */
+  #particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  .bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;
+       animation:float 18s ease-in-out infinite}
+  .orb.a{width:520px;height:520px;background:#4F46E5;top:-160px;left:-120px}
+  .orb.b{width:460px;height:460px;background:#06B6D4;top:30%;right:-160px;animation-delay:-6s}
+  .orb.c{width:400px;height:400px;background:#4F46E5;bottom:-160px;left:30%;animation-delay:-12s}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(40px,-30px) scale(1.08)}
+    66%{transform:translate(-30px,40px) scale(.95)}
+  }
 
-  .hero{text-align:center;padding:80px 24px 56px;
-        background:radial-gradient(ellipse at top,rgba(59,130,246,.12),transparent 60%)}
-  .hero h1{font-size:clamp(32px,8vw,52px);font-weight:800;letter-spacing:-1px;
-        margin-bottom:16px}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  /* ---------- Nav ---------- */
+  header.nav{position:sticky;top:0;z-index:100;
+    background:rgba(5,5,5,.55);backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+  header.nav.scrolled{border-bottom-color:var(--border);background:rgba(5,5,5,.8)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;
+    height:68px;max-width:1180px;margin:0 auto;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;letter-spacing:-.3px}
+  .brand .mark{width:34px;height:34px;border-radius:10px;background:var(--grad);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow:0 6px 18px rgba(79,70,229,.45)}
+  .brand .mark svg{width:19px;height:19px}
+  .nav-links{display:flex;align-items:center;gap:6px}
+  .nav-links a{color:var(--muted);font-size:14px;font-weight:500;padding:8px 14px;
+    border-radius:9px;transition:color .2s,background .2s}
+  .nav-links a:hover{color:var(--text);background:var(--glass)}
+  .nav-cta{background:var(--grad);color:#fff!important;font-weight:600;
+    box-shadow:0 6px 18px rgba(79,70,229,.35)}
+  .nav-cta:hover{background:var(--grad)!important;transform:translateY(-1px)}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;
+    cursor:pointer;padding:8px}
+  .burger span{width:22px;height:2px;background:var(--text);border-radius:2px;
+    transition:transform .3s,opacity .3s}
+  .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger.open span:nth-child(2){opacity:0}
+  .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;text-align:center;padding:130px 24px 110px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:30px;
+    background:var(--glass);border:1px solid var(--border);font-size:13px;
+    font-weight:500;color:var(--muted);margin-bottom:30px;
+    backdrop-filter:blur(8px)}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);
+    box-shadow:0 0 10px var(--accent-2);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .hero h1{font-size:clamp(40px,8vw,82px);font-weight:900;line-height:1.04;
+    letter-spacing:-2.5px;margin-bottom:24px}
   .hero h1 .grad{background:var(--grad);-webkit-background-clip:text;
-        background-clip:text;-webkit-text-fill-color:transparent}
-  .hero p{font-size:clamp(15px,3.5vw,18px);color:var(--muted);max-width:480px;margin:0 auto}
+    background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .hero p.sub{font-size:clamp(16px,2.6vw,20px);color:var(--muted);max-width:620px;
+    margin:0 auto 42px;line-height:1.6}
+  .hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:15px 30px;border-radius:13px;
+    font-weight:600;font-size:15px;cursor:pointer;border:1px solid transparent;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s,border-color .25s}
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 30px rgba(79,70,229,.4)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(79,70,229,.55)}
+  .btn-ghost{background:var(--glass);color:var(--text);border-color:var(--border);
+    backdrop-filter:blur(8px)}
+  .btn-ghost:hover{transform:translateY(-3px);border-color:var(--border-hover);background:rgba(255,255,255,.07)}
 
-  main{flex:1;max-width:900px;margin:0 auto;padding:48px 24px}
-  .section-label{font-size:12px;font-weight:600;letter-spacing:.08em;
-        text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  /* ---------- Sections ---------- */
+  section{position:relative;padding:100px 0}
+  .eyebrow{display:block;text-align:center;font-size:13px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;margin-bottom:14px}
+  .sec-title{text-align:center;font-size:clamp(30px,5vw,46px);font-weight:800;
+    letter-spacing:-1.2px;margin-bottom:16px}
+  .sec-sub{text-align:center;color:var(--muted);max-width:560px;margin:0 auto 60px;font-size:16px}
 
-  .apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-  .app-card{background:var(--card);border:1px solid var(--border);border-radius:18px;
-        padding:28px 24px;text-decoration:none;color:inherit;
-        transition:transform .25s,border-color .25s,box-shadow .25s;display:block}
-  .app-card:hover{transform:translateY(-4px);border-color:rgba(59,130,246,.4);
-        box-shadow:0 12px 32px rgba(0,0,0,.3)}
-  .app-icon{width:52px;height:52px;border-radius:14px;
-        background:rgba(59,130,246,.12);display:flex;align-items:center;
-        justify-content:center;margin-bottom:18px}
-  .app-icon svg{width:30px;height:30px}
-  .app-name{font-size:18px;font-weight:700;margin-bottom:6px}
-  .app-desc{color:var(--muted);font-size:14px;line-height:1.55;margin-bottom:18px}
-  .app-links{display:flex;gap:12px;flex-wrap:wrap}
-  .app-links a{font-size:13px;color:var(--primary);text-decoration:none;font-weight:500;
-        padding:5px 12px;border:1px solid rgba(59,130,246,.3);border-radius:8px;
-        transition:background .2s,border-color .2s}
-  .app-links a:hover{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.5)}
+  /* glass card base */
+  .glass{background:var(--glass);border:1px solid var(--border);border-radius:20px;
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,background .35s}
 
-  footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;
-        color:#5a627a;font-size:13px}
+  /* ---------- About / stats ---------- */
+  .about-text{max-width:680px;margin:0 auto 56px;text-align:center;
+    color:var(--muted);font-size:clamp(16px,2.4vw,19px);line-height:1.75}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .stat{padding:30px 22px;text-align:center}
+  .stat:hover{transform:translateY(-5px);border-color:var(--border-hover);background:rgba(255,255,255,.06)}
+  .stat .num{font-size:clamp(30px,4vw,42px);font-weight:800;letter-spacing:-1px;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;line-height:1}
+  .stat .label{color:var(--muted);font-size:13.5px;margin-top:10px;font-weight:500}
+
+  /* ---------- Apps ---------- */
+  .apps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+  .app-card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+  .app-card:hover{transform:translateY(-6px);border-color:var(--border-hover)}
+  .app-shot{position:relative;height:200px;background:
+    radial-gradient(circle at 30% 20%,rgba(79,70,229,.35),transparent 55%),
+    radial-gradient(circle at 75% 80%,rgba(6,182,212,.3),transparent 55%),
+    linear-gradient(135deg,#0c0c14,#0a0a10);
+    display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border)}
+  .app-shot .glow-ring{position:absolute;width:150px;height:150px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(79,70,229,.3) inset}
+  .app-shot .app-icon{width:84px;height:84px;border-radius:22px;
+    display:flex;align-items:center;justify-content:center;position:relative;z-index:1;
+    box-shadow:0 18px 40px rgba(0,0,0,.5)}
+  .app-icon svg{width:46px;height:46px}
+  .ver-badge{position:absolute;top:16px;right:16px;font-size:11px;font-weight:600;
+    padding:5px 11px;border-radius:20px;background:rgba(0,0,0,.4);
+    border:1px solid var(--border);color:var(--muted);backdrop-filter:blur(6px)}
+  .app-body{padding:26px 26px 28px;display:flex;flex-direction:column;flex:1}
+  .app-cat{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent-2);margin-bottom:10px}
+  .app-name{font-size:23px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+  .app-desc{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+  .app-feats{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-bottom:26px}
+  .app-feats li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text)}
+  .app-feats li svg{width:16px;height:16px;flex-shrink:0;color:var(--accent-2)}
+  .app-actions{margin-top:auto;display:flex;gap:12px;align-items:center}
+  .dl-btn{flex:1;justify-content:center;background:var(--grad);color:#fff;
+    box-shadow:0 8px 22px rgba(79,70,229,.35)}
+  .dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(79,70,229,.5)}
+  .link-btn{padding:13px 18px;border-radius:13px;background:var(--glass);
+    border:1px solid var(--border);font-size:14px;font-weight:600;color:var(--muted);
+    transition:color .2s,border-color .2s}
+  .link-btn:hover{color:var(--text);border-color:var(--border-hover)}
+
+  /* ---------- Feature highlight ---------- */
+  .feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .feat{padding:30px 26px}
+  .feat:hover{transform:translateY(-5px);border-color:var(--border-hover);background:rgba(255,255,255,.06)}
+  .feat .ic{width:52px;height:52px;border-radius:14px;background:rgba(79,70,229,.14);
+    border:1px solid rgba(79,70,229,.25);display:flex;align-items:center;justify-content:center;
+    margin-bottom:18px}
+  .feat .ic svg{width:26px;height:26px;color:var(--accent-2)}
+  .feat h3{font-size:17px;font-weight:700;margin-bottom:8px}
+  .feat p{color:var(--muted);font-size:14px}
+
+  /* ---------- Contact ---------- */
+  .contact-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:26px;align-items:stretch}
+  .contact-info{padding:36px 32px;display:flex;flex-direction:column;gap:18px}
+  .contact-info h3{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+  .contact-info p.lead{color:var(--muted);font-size:15px;margin-bottom:8px}
+  .c-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;
+    background:rgba(255,255,255,.03);border:1px solid var(--border);
+    transition:border-color .25s,transform .25s,background .25s}
+  .c-item:hover{border-color:var(--border-hover);transform:translateX(4px);background:rgba(255,255,255,.06)}
+  .c-item .ci{width:42px;height:42px;border-radius:11px;background:var(--grad);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .c-item .ci svg{width:20px;height:20px;color:#fff}
+  .c-item .ct{display:flex;flex-direction:column}
+  .c-item .ct .k{font-size:12px;color:var(--muted-2);font-weight:500}
+  .c-item .ct .v{font-size:14.5px;font-weight:600;color:var(--text)}
+  form.contact-form{padding:36px 32px;display:flex;flex-direction:column;gap:16px}
+  .field{display:flex;flex-direction:column;gap:7px}
+  .field label{font-size:13px;font-weight:600;color:var(--muted)}
+  .field input,.field textarea{background:rgba(255,255,255,.03);border:1px solid var(--border);
+    border-radius:12px;padding:13px 15px;color:var(--text);font-size:14.5px;font-family:inherit;
+    transition:border-color .2s,background .2s;resize:vertical}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--accent);
+    background:rgba(79,70,229,.06)}
+  .field textarea{min-height:120px}
+  .form-note{font-size:13px;color:var(--muted-2);min-height:18px}
+  .form-note.ok{color:var(--accent-2)}
+
+  /* ---------- Footer ---------- */
+  footer.site{border-top:1px solid var(--border);padding:54px 24px 40px;
+    text-align:center;position:relative;z-index:2}
+  footer.site .fbrand{display:inline-flex;align-items:center;gap:11px;font-weight:800;
+    font-size:19px;margin-bottom:12px}
+  footer.site .ftag{color:var(--muted);font-size:15px;margin-bottom:22px}
+  footer.site .fcopy{color:var(--muted-2);font-size:13px}
+  footer.site .fsoc{display:flex;gap:14px;justify-content:center;margin-bottom:26px}
+  footer.site .fsoc a{width:40px;height:40px;border-radius:11px;background:var(--glass);
+    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+    color:var(--muted);transition:color .2s,border-color .2s,transform .2s}
+  footer.site .fsoc a:hover{color:var(--text);border-color:var(--border-hover);transform:translateY(-3px)}
+  footer.site .fsoc svg{width:18px;height:18px}
+
+  /* ---------- Reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal[data-d="1"]{transition-delay:.08s}
+  .reveal[data-d="2"]{transition-delay:.16s}
+  .reveal[data-d="3"]{transition-delay:.24s}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:900px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .feat-grid{grid-template-columns:repeat(2,1fr)}
+    .apps-grid{grid-template-columns:1fr}
+    .contact-wrap{grid-template-columns:1fr}
+  }
+  @media(max-width:720px){
+    .nav-links{position:fixed;top:68px;left:0;right:0;flex-direction:column;
+      align-items:stretch;gap:6px;padding:18px 24px 26px;
+      background:rgba(8,8,8,.96);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      transform:translateY(-130%);opacity:0;pointer-events:none;
+      transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s}
+    .nav-links.open{transform:none;opacity:1;pointer-events:auto}
+    .nav-links a{padding:13px 16px;font-size:15px}
+    .nav-cta{text-align:center}
+    .burger{display:flex}
+    .hero{padding:90px 24px 80px}
+    section{padding:74px 0}
+    .app-feats{grid-template-columns:1fr}
+  }
+  @media(max-width:430px){
+    .stats{grid-template-columns:1fr}
+    .feat-grid{grid-template-columns:1fr}
+    .hero-btns{flex-direction:column}
+    .hero-btns .btn{width:100%;justify-content:center}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <a class="logo" href="index.html"><span>Cipher Dev</span></a>
-</nav>
+<!-- animated background -->
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+</div>
+<canvas id="particles" aria-hidden="true"></canvas>
 
-<header class="hero">
-  <h1>Apps by <span class="grad">Cipher Dev</span></h1>
-  <p>Privacy-focused tools built for everyone.</p>
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#home" class="brand" aria-label="Cipher Dev home">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 6.5v6c0 5 3.9 8.4 9 9.5 5.1-1.1 9-4.5 9-9.5v-6L12 2z"
+            stroke="#fff" stroke-width="2" stroke-linejoin="round" fill="none"/>
+          <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Cipher Dev
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#apps">Apps</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="nav-cta">Contact</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </header>
 
-<main>
-  <p class="section-label">Our Apps</p>
-  <div class="apps">
-
-    <a class="app-card" href="securelink-vpn/index.html">
-      <div class="app-icon">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="g1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#3b82f6"/><stop offset="1" stop-color="#06b6d4"/>
-            </linearGradient>
-          </defs>
-          <path d="M32 4 L56 14 V32 C56 47 45 57 32 60 C19 57 8 47 8 32 V14 Z" fill="url(#g1)"/>
-          <path d="M22 32 l7 7 l14 -14" stroke="#fff" stroke-width="4.5"
-                stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
-      </div>
-      <div class="app-name">Secure Link VPN</div>
-      <div class="app-desc">Encrypted, no-logs VPN for Android. Fast servers and strong privacy, built for everyone.</div>
-      <div class="app-links">
-        <a href="securelink-vpn/index.html" onclick="event.stopPropagation()">Home</a>
-        <a href="securelink-vpn/privacy.html" onclick="event.stopPropagation()">Privacy</a>
-        <a href="securelink-vpn/terms.html" onclick="event.stopPropagation()">Terms</a>
-      </div>
-    </a>
-
-    <a class="app-card" href="qr-wave/index.html">
-      <div class="app-icon" style="background:linear-gradient(135deg,rgba(43,200,222,.15),rgba(69,113,232,.15))">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="8" y="8" width="20" height="20" rx="3" fill="none" stroke="#2BC8DE" stroke-width="4"/>
-          <rect x="13" y="13" width="10" height="10" rx="1" fill="#2BC8DE"/>
-          <rect x="36" y="8" width="20" height="20" rx="3" fill="none" stroke="#2BC8DE" stroke-width="4"/>
-          <rect x="41" y="13" width="10" height="10" rx="1" fill="#2BC8DE"/>
-          <rect x="8" y="36" width="20" height="20" rx="3" fill="none" stroke="#2BC8DE" stroke-width="4"/>
-          <rect x="13" y="41" width="10" height="10" rx="1" fill="#2BC8DE"/>
-          <rect x="36" y="36" width="6" height="6" rx="1" fill="#4571E8"/>
-          <rect x="46" y="36" width="10" height="6" rx="1" fill="#4571E8"/>
-          <rect x="36" y="46" width="10" height="6" rx="1" fill="#4571E8"/>
-          <rect x="50" y="46" width="6" height="10" rx="1" fill="#4571E8"/>
-        </svg>
-      </div>
-      <div class="app-name">QR Wave</div>
-      <div class="app-desc">Scan. Create. Connect. — a fast, private QR scanner &amp; generator for Android.</div>
-      <div class="app-links">
-        <a href="qr-wave/index.html" onclick="event.stopPropagation()">Home</a>
-        <a href="qr-wave/privacy.html" onclick="event.stopPropagation()">Privacy</a>
-        <a href="qr-wave/terms.html" onclick="event.stopPropagation()">Terms</a>
-      </div>
-    </a>
-
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="container">
+    <span class="pill reveal"><span class="dot"></span> Independent software studio</span>
+    <h1 class="reveal" data-d="1">Simple Apps.<br><span class="grad">Powerful Solutions.</span></h1>
+    <p class="sub reveal" data-d="2">Independent software products designed to make everyday tasks
+      faster, smarter, and easier.</p>
+    <div class="hero-btns reveal" data-d="3">
+      <a href="#apps" class="btn btn-primary">
+        Explore Apps
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#contact" class="btn btn-ghost">Contact</a>
+    </div>
   </div>
-</main>
+</section>
 
-<footer>© 2026 Cipher Dev. All rights reserved.</footer>
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <span class="eyebrow reveal">About</span>
+    <h2 class="sec-title reveal" data-d="1">About Cipher Dev</h2>
+    <p class="about-text reveal" data-d="2">Cipher Dev focuses on creating useful software tools that
+      solve real-world problems through clean design, reliability, and simplicity.</p>
+    <div class="stats">
+      <div class="stat glass reveal"><div class="num" data-count="2">0</div><div class="label">Active Apps</div></div>
+      <div class="stat glass reveal" data-d="1"><div class="num" data-count="50000" data-suffix="+">0</div><div class="label">Downloads</div></div>
+      <div class="stat glass reveal" data-d="2"><div class="num" data-count="120" data-suffix="+">0</div><div class="label">Updates Released</div></div>
+      <div class="stat glass reveal" data-d="3"><div class="num" data-count="98" data-suffix="%">0</div><div class="label">User Satisfaction</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPS -->
+<section id="apps">
+  <div class="container">
+    <span class="eyebrow reveal">Our Apps</span>
+    <h2 class="sec-title reveal" data-d="1">Products built to ship</h2>
+    <p class="sec-sub reveal" data-d="2">Focused tools, crafted with care and updated regularly.</p>
+    <div class="apps-grid">
+
+      <!-- QR Wave -->
+      <article class="app-card glass reveal">
+        <div class="app-shot">
+          <span class="ver-badge">v1.0</span>
+          <div class="glow-ring"></div>
+          <div class="app-icon" style="background:linear-gradient(135deg,#2BC8DE,#4571E8)">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="8" width="20" height="20" rx="3" fill="none" stroke="#fff" stroke-width="4"/>
+              <rect x="14" y="14" width="8" height="8" rx="1" fill="#fff"/>
+              <rect x="36" y="8" width="20" height="20" rx="3" fill="none" stroke="#fff" stroke-width="4"/>
+              <rect x="42" y="14" width="8" height="8" rx="1" fill="#fff"/>
+              <rect x="8" y="36" width="20" height="20" rx="3" fill="none" stroke="#fff" stroke-width="4"/>
+              <rect x="14" y="42" width="8" height="8" rx="1" fill="#fff"/>
+              <rect x="36" y="36" width="7" height="7" rx="1" fill="#fff"/>
+              <rect x="48" y="36" width="8" height="7" rx="1" fill="#fff"/>
+              <rect x="36" y="48" width="8" height="8" rx="1" fill="#fff"/>
+              <rect x="49" y="49" width="7" height="7" rx="1" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-cat">QR &amp; Productivity</div>
+          <h3 class="app-name">QR Wave</h3>
+          <p class="app-desc">Generate, scan, and manage QR codes with a fast and user-friendly experience.</p>
+          <ul class="app-feats">
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>QR Generator</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>QR Scanner</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>History Management</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Easy Sharing</li>
+          </ul>
+          <div class="app-actions">
+            <a href="qr-wave/index.html" class="btn dl-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Download
+            </a>
+            <a href="qr-wave/index.html" class="link-btn">Details</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Office Tools -->
+      <article class="app-card glass reveal" data-d="1">
+        <div class="app-shot">
+          <span class="ver-badge">v1.0</span>
+          <div class="glow-ring"></div>
+          <div class="app-icon" style="background:linear-gradient(135deg,#4F46E5,#06B6D4)">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="10" width="28" height="38" rx="4" fill="#fff"/>
+              <rect x="18" y="18" width="16" height="3" rx="1.5" fill="#4F46E5"/>
+              <rect x="18" y="26" width="16" height="3" rx="1.5" fill="#4F46E5"/>
+              <rect x="18" y="34" width="11" height="3" rx="1.5" fill="#4F46E5"/>
+              <rect x="30" y="26" width="22" height="28" rx="4" fill="#06B6D4"/>
+              <path d="M41 33v14M34 40h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-cat">Productivity</div>
+          <h3 class="app-name">Office Tools</h3>
+          <p class="app-desc">A collection of useful office utilities designed to improve workflow and productivity.</p>
+          <ul class="app-feats">
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Document Utilities</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>File Conversion</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Productivity Tools</li>
+            <li><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Quick Access Functions</li>
+          </ul>
+          <div class="app-actions">
+            <a href="#contact" class="btn dl-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Download
+            </a>
+            <span class="link-btn" style="cursor:default">Coming soon</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE HIGHLIGHT -->
+<section id="features">
+  <div class="container">
+    <span class="eyebrow reveal">Why Cipher Dev</span>
+    <h2 class="sec-title reveal" data-d="1">Built Around Simplicity</h2>
+    <p class="sec-sub reveal" data-d="2">Every product is shaped by the same principles.</p>
+    <div class="feat-grid">
+      <div class="feat glass reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        <h3>Fast Performance</h3><p>Lightweight, optimized builds that launch instantly and stay smooth.</p>
+      </div>
+      <div class="feat glass reveal" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 00-4 12.7V18h8v-3.3A7 7 0 0012 2zM9 22h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Easy to Use</h3><p>Thoughtful, intuitive interfaces that work the way you expect.</p>
+      </div>
+      <div class="feat glass reveal" data-d="2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-3-6.7M21 4v4h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Regular Updates</h3><p>Continuous improvements, new features, and reliable maintenance.</p>
+      </div>
+      <div class="feat glass reveal" data-d="3">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 16l-5 2.6 1-5.5-4-3.9 5.5-.8L12 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        <h3>Clean Design</h3><p>Minimal, modern aesthetics that put your content first.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <span class="eyebrow reveal">Get in touch</span>
+    <h2 class="sec-title reveal" data-d="1">Let's talk</h2>
+    <p class="sec-sub reveal" data-d="2">Questions, feedback, or collaboration — reach out anytime.</p>
+    <div class="contact-wrap">
+
+      <div class="contact-info glass reveal">
+        <div>
+          <h3>Contact</h3>
+          <p class="lead">We usually respond within 1–2 business days.</p>
+        </div>
+        <a class="c-item" href="mailto:linhtetaunghk@gmail.com">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="ct"><span class="k">Email</span><span class="v">linhtetaunghk@gmail.com</span></span>
+        </a>
+        <a class="c-item" href="https://github.com/lh-ughk" target="_blank" rel="noopener">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.36 9.36 0 0112 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.02 10.02 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg></span>
+          <span class="ct"><span class="k">GitHub</span><span class="v">@lh-ughk</span></span>
+        </a>
+        <a class="c-item" href="https://facebook.com/" target="_blank" rel="noopener">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg></span>
+          <span class="ct"><span class="k">Facebook</span><span class="v">Cipher Dev</span></span>
+        </a>
+      </div>
+
+      <form class="contact-form glass reveal" data-d="1" id="contactForm" novalidate>
+        <div class="field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" placeholder="Your name" required>
+        </div>
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="cf-msg">Message</label>
+          <textarea id="cf-msg" name="message" placeholder="How can we help?" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="justify-content:center">Send Message</button>
+        <p class="form-note" id="formNote" aria-live="polite"></p>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="fbrand">
+    <span class="mark" style="width:30px;height:30px;border-radius:9px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M12 2L3 6.5v6c0 5 3.9 8.4 9 9.5 5.1-1.1 9-4.5 9-9.5v-6L12 2z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    Cipher Dev
+  </div>
+  <p class="ftag">Crafting useful software experiences.</p>
+  <div class="fsoc">
+    <a href="mailto:linhtetaunghk@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a href="https://github.com/lh-ughk" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.36 9.36 0 0112 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.02 10.02 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg></a>
+    <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg></a>
+  </div>
+  <p class="fcopy">© <span id="year">2026</span> Cipher Dev. All rights reserved.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // nav scrolled state
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 10); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // mobile menu
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', function(){
+    var open = navLinks.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      navLinks.classList.remove('open'); burger.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+    });
+  });
+
+  // reveal on scroll
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold:.14, rootMargin:'0px 0px -40px 0px'});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // animated counters
+  var counters = document.querySelectorAll('[data-count]');
+  var animateCount = function(el){
+    var target = parseInt(el.getAttribute('data-count'),10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1400, start = null;
+    var step = function(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      var val = Math.floor(eased * target);
+      el.textContent = val.toLocaleString() + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString() + suffix;
+    };
+    requestAnimationFrame(step);
+  };
+  if ('IntersectionObserver' in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ animateCount(e.target); cio.unobserve(e.target); }
+      });
+    }, {threshold:.6});
+    counters.forEach(function(el){ cio.observe(el); });
+  } else {
+    counters.forEach(function(el){ el.textContent = parseInt(el.getAttribute('data-count'),10).toLocaleString() + (el.getAttribute('data-suffix')||''); });
+  }
+
+  // contact form -> mailto (static, no backend)
+  var form = document.getElementById('contactForm');
+  var note = document.getElementById('formNote');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var name = form.name.value.trim();
+    var email = form.email.value.trim();
+    var msg = form.message.value.trim();
+    if (!name || !email || !msg){
+      note.className = 'form-note'; note.textContent = 'Please fill in all fields.'; return;
+    }
+    var subject = encodeURIComponent('Cipher Dev — message from ' + name);
+    var body = encodeURIComponent(msg + '\n\n— ' + name + ' (' + email + ')');
+    window.location.href = 'mailto:linhtetaunghk@gmail.com?subject=' + subject + '&body=' + body;
+    note.className = 'form-note ok'; note.textContent = 'Opening your email app…';
+  });
+
+  // floating particles
+  var canvas = document.getElementById('particles');
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (canvas && canvas.getContext && !prefersReduced){
+    var ctx = canvas.getContext('2d');
+    var w, h, particles, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var resize = function(){
+      w = canvas.width = innerWidth * dpr;
+      h = canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+    };
+    var make = function(){
+      var count = innerWidth < 700 ? 28 : 60;
+      particles = [];
+      for (var i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w, y: Math.random()*h,
+          r: (Math.random()*1.6+0.4)*dpr,
+          vx: (Math.random()-.5)*0.25*dpr,
+          vy: (Math.random()-.5)*0.25*dpr,
+          a: Math.random()*0.5+0.2,
+          c: Math.random() > .5 ? '79,70,229' : '6,182,212'
+        });
+      }
+    };
+    var draw = function(){
+      ctx.clearRect(0,0,w,h);
+      for (var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x<0||p.x>w) p.vx*=-1;
+        if (p.y<0||p.y>h) p.vy*=-1;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = 'rgba('+p.c+','+p.a+')';
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    };
+    resize(); make(); draw();
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt); rt = setTimeout(function(){ resize(); make(); }, 200);
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
