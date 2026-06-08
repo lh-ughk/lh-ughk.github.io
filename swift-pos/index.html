@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swift POS — Offline-first Point of Sale</title>
+<meta name="description" content="Swift POS is a fast, offline-first point-of-sale app for small retail businesses. Sales, inventory, customers, expenses, shifts and receipts — with secure cloud backup.">
+<meta name="theme-color" content="#070B0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070B0A;
+    --surface:#0E1413;
+    --card:#121A18;
+    --accent:#10B981;
+    --accent-2:#06B6D4;
+    --grad:linear-gradient(135deg,#10B981 0%,#06B6D4 100%);
+    --text:#EAF4F1;
+    --muted:#8A9C97;
+    --muted-2:#586863;
+    --border:rgba(255,255,255,.07);
+    --border-h:rgba(16,185,129,.3);
+    --glass:rgba(255,255,255,.035);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased}
+  ::selection{background:rgba(16,185,129,.3);color:#fff}
+  a{color:inherit;text-decoration:none}
+
+  /* orbs */
+  .orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.26;animation:flt 20s ease-in-out infinite}
+  .orb-a{width:600px;height:600px;background:#10B981;top:-200px;right:-200px}
+  .orb-b{width:500px;height:500px;background:#06B6D4;bottom:-180px;left:-150px;animation-delay:-8s}
+  @keyframes flt{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+
+  .z{position:relative;z-index:2}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+  /* NAV */
+  nav.top{position:sticky;top:0;z-index:100;background:rgba(7,11,10,.6);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid transparent;transition:border-color .3s}
+  nav.top.sc{border-bottom-color:var(--border)}
+  .nav-i{display:flex;align-items:center;justify-content:space-between;
+    height:64px;max-width:1100px;margin:0 auto;padding:0 24px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:17px}
+  .logo-badge{width:34px;height:34px;border-radius:10px;flex-shrink:0;
+    background:var(--grad);display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:900;color:#fff;
+    box-shadow:0 4px 14px rgba(16,185,129,.35)}
+  .nav-r{display:flex;align-items:center;gap:6px}
+  .nav-r a{color:var(--muted);font-size:13.5px;font-weight:500;padding:7px 13px;
+    border-radius:8px;transition:color .2s,background .2s}
+  .nav-r a:hover{color:var(--text);background:var(--glass)}
+  .nav-r .dl{background:var(--grad);color:#fff!important;font-weight:600;
+    box-shadow:0 4px 14px rgba(16,185,129,.3)}
+  .nav-r .dl:hover{transform:translateY(-1px)}
+
+  /* HERO */
+  .hero{padding:110px 24px 90px;text-align:center;position:relative}
+  .hero::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(16,185,129,.12),transparent);
+    pointer-events:none}
+  .hero-icon{width:120px;height:120px;border-radius:28px;margin:0 auto 32px;position:relative;
+    background:var(--grad);display:flex;align-items:center;justify-content:center;
+    font-size:60px;font-weight:900;color:#fff;letter-spacing:-2px;
+    box-shadow:0 24px 60px rgba(16,185,129,.35),0 0 0 1px rgba(16,185,129,.2),inset 0 1px 0 rgba(255,255,255,.2)}
+  .hero-tag{display:inline-flex;align-items:center;gap:7px;padding:6px 15px;
+    border-radius:24px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+    font-size:12.5px;font-weight:600;color:var(--accent);margin-bottom:24px;letter-spacing:.02em}
+  .hero-tag .live{width:6px;height:6px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 8px var(--accent);animation:blink 2s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .hero h1{font-size:clamp(38px,8vw,72px);font-weight:900;letter-spacing:-2px;
+    line-height:1.05;margin-bottom:22px}
+  .hero h1 .g{background:var(--grad);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p.sub{font-size:clamp(15px,2.5vw,19px);color:var(--muted);
+    max-width:580px;margin:0 auto 40px;line-height:1.65}
+  .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;
+    border-radius:12px;font-weight:600;font-size:15px;border:1px solid transparent;
+    cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+  .btn-grad{background:var(--grad);color:#fff;box-shadow:0 8px 24px rgba(16,185,129,.3)}
+  .btn-grad:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(16,185,129,.45)}
+  .btn-out{background:var(--glass);color:var(--text);border-color:var(--border);
+    backdrop-filter:blur(8px)}
+  .btn-out:hover{transform:translateY(-3px);border-color:var(--border-h)}
+
+  .store-strip{display:flex;align-items:center;justify-content:center;gap:10px;
+    margin-top:18px;flex-wrap:wrap}
+  .store-badge{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;
+    border-radius:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+    font-size:13px;color:var(--muted);transition:border-color .2s,background .2s}
+  .store-badge:hover{border-color:var(--border-h);background:rgba(16,185,129,.06)}
+  .store-badge svg{width:18px;height:18px;flex-shrink:0}
+
+  /* SECTIONS */
+  .section{padding:90px 0}
+  .ey{display:block;text-align:center;font-size:12px;font-weight:700;
+    letter-spacing:.15em;text-transform:uppercase;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;margin-bottom:12px}
+  .st{text-align:center;font-size:clamp(28px,5vw,42px);font-weight:800;
+    letter-spacing:-1px;margin-bottom:14px}
+  .ss{text-align:center;color:var(--muted);max-width:520px;margin:0 auto 56px;font-size:15.5px}
+
+  .glass{background:var(--glass);border:1px solid var(--border);border-radius:18px;
+    backdrop-filter:blur(10px)}
+
+  .feat-main{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+  .feat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .fc{padding:28px 26px;transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s}
+  .fc:hover{transform:translateY(-5px);border-color:var(--border-h)}
+  .fc .ic{width:50px;height:50px;border-radius:13px;
+    background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .fc .ic svg{width:24px;height:24px;color:var(--accent)}
+  .fc.big .ic{width:56px;height:56px;border-radius:15px}
+  .fc.big .ic svg{width:28px;height:28px}
+  .fc h3{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.2px}
+  .fc.big h3{font-size:18px}
+  .fc p{color:var(--muted);font-size:13.5px;line-height:1.6}
+  .fc.big p{font-size:14.5px}
+
+  /* how it works */
+  .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .how-card{padding:30px 26px;text-align:center;position:relative;overflow:hidden}
+  .how-card:hover{transform:translateY(-5px);border-color:var(--border-h)}
+  .how-card .step{font-size:56px;font-weight:900;letter-spacing:-3px;line-height:1;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;opacity:.25;margin-bottom:16px}
+  .how-card h3{font-size:17px;font-weight:700;margin-bottom:8px}
+  .how-card p{color:var(--muted);font-size:14px}
+
+  /* phone mockup */
+  .mockup-wrap{display:flex;justify-content:center;gap:20px;align-items:flex-end;
+    padding:50px 0 10px;flex-wrap:wrap}
+  .phone{width:230px;background:var(--card);border-radius:36px;
+    border:1px solid var(--border);overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative}
+  .phone-top{height:22px;background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .notch{width:70px;height:16px;background:#06100e;border-radius:0 0 12px 12px}
+  .phone-screen{padding:16px;min-height:400px;
+    background:radial-gradient(circle at 40% 20%,rgba(16,185,129,.14),transparent 55%),
+               radial-gradient(circle at 80% 80%,rgba(6,182,212,.1),transparent 50%),
+               var(--card)}
+  .ps-head{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+  .ps-prod{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:11px;
+    background:rgba(255,255,255,.04);border:1px solid var(--border);margin-bottom:8px}
+  .ps-prod .px{width:34px;height:34px;border-radius:9px;background:rgba(16,185,129,.15);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .ps-prod .pi{flex:1}
+  .ps-prod .pi .t{font-size:12px;font-weight:600;color:var(--text)}
+  .ps-prod .pi .s{font-size:10.5px;color:var(--muted)}
+  .ps-prod .pq{font-size:12px;font-weight:700;color:var(--accent)}
+  .ps-total{margin-top:14px;padding:14px;border-radius:13px;background:rgba(16,185,129,.1);
+    border:1px solid var(--border-h);display:flex;justify-content:space-between;align-items:center}
+  .ps-total .l{font-size:12px;color:var(--muted)}
+  .ps-total .v{font-size:18px;font-weight:800;color:var(--text)}
+  .ps-pay{margin-top:10px;padding:13px;border-radius:12px;background:var(--grad);
+    text-align:center;font-size:13px;font-weight:700;color:#fff}
+
+  /* CTA */
+  .cta-banner{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.08));
+    border:1px solid rgba(16,185,129,.2);border-radius:22px;padding:56px 40px;
+    text-align:center;position:relative;overflow:hidden}
+  .cta-banner::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;
+    border-radius:50%;background:rgba(16,185,129,.12);filter:blur(60px);pointer-events:none}
+  .cta-banner h2{font-size:clamp(26px,5vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+  .cta-banner p{color:var(--muted);max-width:480px;margin:0 auto 32px;font-size:16px}
+  .cta-icon{width:80px;height:80px;border-radius:20px;margin:0 auto 28px;
+    background:var(--grad);display:flex;align-items:center;justify-content:center;
+    font-size:40px;font-weight:900;color:#fff;box-shadow:0 16px 40px rgba(16,185,129,.4)}
+
+  /* footer */
+  footer{border-top:1px solid var(--border);padding:44px 24px 36px;text-align:center}
+  .foot-brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:17px;margin-bottom:12px}
+  .foot-badge{width:30px;height:30px;border-radius:9px;flex-shrink:0;
+    background:var(--grad);display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:900;color:#fff}
+  .foot-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+  .foot-links a{color:var(--muted);font-size:13.5px;transition:color .2s}
+  .foot-links a:hover{color:var(--text)}
+  .foot-copy{color:var(--muted-2);font-size:12.5px}
+  .foot-copy a{color:var(--accent)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(24px);
+    transition:opacity .65s cubic-bezier(.2,.8,.2,1),transform .65s cubic-bezier(.2,.8,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv[data-d="1"]{transition-delay:.08s}
+  .rv[data-d="2"]{transition-delay:.16s}
+  .rv[data-d="3"]{transition-delay:.24s}
+
+  @media(max-width:860px){
+    .feat-main{grid-template-columns:1fr}
+    .feat-row{grid-template-columns:repeat(2,1fr)}
+    .how-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:640px){
+    .feat-row{grid-template-columns:1fr}
+    .btns{flex-direction:column;align-items:center}
+    .btns .btn{width:100%;max-width:320px;justify-content:center}
+    nav.top .nav-r a:not(.dl){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important}
+    .rv{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="orbs" aria-hidden="true">
+  <div class="orb orb-a"></div><div class="orb orb-b"></div>
+</div>
+
+<!-- NAV -->
+<nav class="top z" id="nav">
+  <div class="nav-i">
+    <a href="index.html" class="logo">
+      <span class="logo-badge">S</span>
+      Swift POS
+    </a>
+    <div class="nav-r">
+      <a href="../index.html">Home</a>
+      <a href="privacy-policy.html">Privacy</a>
+      <a href="terms-of-service.html">Terms</a>
+      <a href="#download" class="dl">Get the App</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero z">
+  <div class="container">
+    <div class="hero-tag rv"><span class="live"></span> Offline-first POS for Android</div>
+    <div class="hero-icon rv" data-d="1">S</div>
+    <h1 class="rv" data-d="1">Run your shop.<br><span class="g">Online or off.</span></h1>
+    <p class="sub rv" data-d="2">Swift POS is a fast, offline-first point-of-sale app for small retail
+      businesses — sell, track inventory, manage staff and customers, and keep everything backed up
+      securely to the cloud.</p>
+    <div class="btns rv" data-d="3">
+      <a href="#download" class="btn btn-grad">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v13m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Get Swift POS
+      </a>
+      <a href="#features" class="btn btn-out">See Features</a>
+    </div>
+    <div class="store-strip rv" data-d="3" style="transition-delay:.32s">
+      <span class="store-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Works offline
+      </span>
+      <span class="store-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-6.22-8.56"/><path d="M22 4L12 14.01l-3-3"/></svg>
+        Secure cloud backup
+      </span>
+      <span class="store-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Multi-staff
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- PHONE MOCKUP -->
+<section class="section z" style="padding-top:0;padding-bottom:70px">
+  <div class="container">
+    <div class="mockup-wrap rv">
+      <!-- left phone: inventory -->
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-screen">
+          <div class="ps-head">Inventory</div>
+          <div class="ps-prod">
+            <div class="px">🥤</div>
+            <div class="pi"><div class="t">Cold Brew 350ml</div><div class="s">In stock · 48</div></div>
+            <div class="pq">$3.50</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🍞</div>
+            <div class="pi"><div class="t">Sourdough Loaf</div><div class="s">In stock · 12</div></div>
+            <div class="pq">$5.00</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🧀</div>
+            <div class="pi"><div class="t">Cheddar 200g</div><div class="s">Low · 4</div></div>
+            <div class="pq">$6.20</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">☕</div>
+            <div class="pi"><div class="t">Espresso Beans</div><div class="s">In stock · 30</div></div>
+            <div class="pq">$12.00</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🍫</div>
+            <div class="pi"><div class="t">Dark Choc Bar</div><div class="s">In stock · 22</div></div>
+            <div class="pq">$2.80</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- center phone: checkout -->
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-screen">
+          <div class="ps-head" style="text-align:center">Current Sale</div>
+          <div class="ps-prod">
+            <div class="px">☕</div>
+            <div class="pi"><div class="t">Espresso × 2</div><div class="s">$3.20 each</div></div>
+            <div class="pq">$6.40</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🍞</div>
+            <div class="pi"><div class="t">Sourdough Loaf</div><div class="s">$5.00 each</div></div>
+            <div class="pq">$5.00</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🥤</div>
+            <div class="pi"><div class="t">Cold Brew × 3</div><div class="s">$3.50 each</div></div>
+            <div class="pq">$10.50</div>
+          </div>
+          <div class="ps-total">
+            <span class="l">Total · 6 items</span>
+            <span class="v">$21.90</span>
+          </div>
+          <div class="ps-pay">Charge $21.90</div>
+        </div>
+      </div>
+
+      <!-- right phone: reports -->
+      <div class="phone">
+        <div class="phone-top"><div class="notch"></div></div>
+        <div class="phone-screen">
+          <div class="ps-head">Today's Summary</div>
+          <div class="ps-total" style="margin-top:0;margin-bottom:10px">
+            <span class="l">Sales</span>
+            <span class="v">$1,284</span>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🧾</div>
+            <div class="pi"><div class="t">Transactions</div><div class="s">62 receipts</div></div>
+            <div class="pq">62</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">💵</div>
+            <div class="pi"><div class="t">Cash drawer</div><div class="s">Shift open</div></div>
+            <div class="pq">$540</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">📉</div>
+            <div class="pi"><div class="t">Expenses</div><div class="s">3 entries</div></div>
+            <div class="pq">$96</div>
+          </div>
+          <div class="ps-prod">
+            <div class="px">🏆</div>
+            <div class="pi"><div class="t">Top seller</div><div class="s">Cold Brew 350ml</div></div>
+            <div class="pq">28</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section z" id="features">
+  <div class="container">
+    <span class="ey rv">Features</span>
+    <h2 class="st rv" data-d="1">Everything a small<br>shop needs to sell</h2>
+    <p class="ss rv" data-d="2">Built for speed at the counter and clarity at the close of day.</p>
+
+    <div class="feat-main">
+      <div class="fc big glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></div>
+        <h3>Fast Checkout</h3>
+        <p>Ring up sales in seconds with quick product search, multi-item carts, discounts, taxes and delivery details — then print or share a receipt.</p>
+      </div>
+      <div class="fc big glass rv" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>
+        <h3>Inventory &amp; Stock</h3>
+        <p>Manage products, categories and prices, track stock levels and inventory movements, and get a clear view of what's running low.</p>
+      </div>
+    </div>
+
+    <div class="feat-row">
+      <div class="fc glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <h3>Customers &amp; Staff</h3>
+        <p>Keep a customer directory and create staff accounts with roles. Each user signs in with a secure, hashed PIN.</p>
+      </div>
+      <div class="fc glass rv" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></div>
+        <h3>Expenses &amp; Shifts</h3>
+        <p>Record expenses, open and close shifts, and reconcile the cash drawer at the end of every day.</p>
+      </div>
+      <div class="fc glass rv" data-d="2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H3v10h6V11zM21 3h-6v18h6V3zM15 7H9v14h6V7z"/></svg></div>
+        <h3>Receipts &amp; Reports</h3>
+        <p>Generate receipts for every sale and review daily summaries — sales, top sellers, transactions and totals at a glance.</p>
+      </div>
+    </div>
+
+    <div class="feat-row" style="margin-top:20px">
+      <div class="fc glass rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.58 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg></div>
+        <h3>Offline-first</h3>
+        <p>Everything works without internet. Your data lives on the device, so the counter never stops — even when the connection does.</p>
+      </div>
+      <div class="fc glass rv" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-6.22-8.56"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <h3>Secure Cloud Backup</h3>
+        <p>Sign in with a cloud account to back up and sync your shop across devices, protected by row-level security on Supabase.</p>
+      </div>
+      <div class="fc glass rv" data-d="2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Privacy &amp; Security</h3>
+        <p>No advertising IDs, no location tracking, no data selling. PINs are salted and hashed, and secrets stay in the device's secure storage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section z" style="padding-top:20px">
+  <div class="container">
+    <span class="ey rv">How it works</span>
+    <h2 class="st rv" data-d="1">Up and running in minutes</h2>
+    <p class="ss rv" data-d="2">No complex setup. Create your shop and start selling.</p>
+    <div class="how-grid">
+      <div class="how-card glass rv">
+        <div class="step">01</div>
+        <h3>Set up your shop</h3>
+        <p>Add your shop profile, products and prices. Create staff accounts with their own secure PINs.</p>
+      </div>
+      <div class="how-card glass rv" data-d="1">
+        <div class="step">02</div>
+        <h3>Sell at the counter</h3>
+        <p>Build a cart, apply discounts and taxes, take payment and hand over a receipt — all offline if needed.</p>
+      </div>
+      <div class="how-card glass rv" data-d="2">
+        <div class="step">03</div>
+        <h3>Track &amp; back up</h3>
+        <p>Close shifts, review daily reports, and sync everything safely to the cloud when you're online.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section class="section z" id="download" style="padding-top:40px">
+  <div class="container">
+    <div class="cta-banner rv">
+      <div class="cta-icon">S</div>
+      <h2>Get Swift POS</h2>
+      <p>Free to use, offline-first, and built for small retail. Have a question or want early access?
+        Get in touch and we'll help you get started.</p>
+      <div class="btns" style="justify-content:center">
+        <a href="mailto:cipherstudio.dev@gmail.com?subject=Swift%20POS%20enquiry" class="btn btn-grad">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Contact Us
+        </a>
+        <a href="privacy-policy.html" class="btn btn-out">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="z">
+  <div class="container">
+    <div class="foot-brand">
+      <span class="foot-badge">S</span>
+      Swift POS
+    </div>
+    <div class="foot-links">
+      <a href="../index.html">Cipher Studio</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="account-deletion.html">Delete account</a>
+      <a href="mailto:cipherstudio.dev@gmail.com">Contact</a>
+    </div>
+    <p class="foot-copy">© <span id="yr">2026</span> Swift POS · Cipher Studio. All rights reserved. · <a href="mailto:cipherstudio.dev@gmail.com">cipherstudio.dev@gmail.com</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function(){ nav.classList.toggle('sc', window.scrollY > 8); }, {passive:true});
+
+  var els = document.querySelectorAll('.rv');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+    }, {threshold:.12, rootMargin:'0px 0px -30px 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+</body>
+</html>
